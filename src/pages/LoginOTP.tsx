@@ -1,16 +1,16 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
-import ProgressBar from '../components/ProgressBar';
-import styles from './Step2OTP.module.css';
+import styles from './LoginOTP.module.css';
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 30;
 
-export default function Step2OTP() {
+export default function LoginOTP() {
   const navigate = useNavigate();
   const location = useLocation();
   const phone: string = location.state?.phone ?? '';
+  const backPath = location.pathname.includes('signin') ? '/signin' : '/login';
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [hasError, setHasError] = useState(false);
@@ -39,13 +39,11 @@ export default function Step2OTP() {
   }
 
   function handleKeyDown(index: number, e: React.KeyboardEvent<HTMLInputElement>) {
-    // backspace on an empty box moves focus left
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       focusBox(index - 1);
     }
   }
 
-  // paste support: spread digits across boxes from current focus position
   function handlePaste(e: React.ClipboardEvent) {
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
     if (!pasted) return;
@@ -61,8 +59,8 @@ export default function Step2OTP() {
   function handleVerify(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!isFilled) return;
-    // real apps call the backend here; for now any 6 digits proceed
-    navigate('/onboarding/path', { state: { phone } });
+    // TODO: replace '/' with the dashboard route once built
+    navigate('/');
   }
 
   function handleResend() {
@@ -78,14 +76,13 @@ export default function Step2OTP() {
   return (
     <AuthLayout>
       <div className={styles.backRow}>
-        <button className={styles.back} onClick={() => navigate(-1)} type="button">
+        <button className={styles.back} onClick={() => navigate(backPath)} type="button">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <path d="M15 9H3M8 4L3 9L8 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Back
         </button>
       </div>
-      <ProgressBar current={2} total={5} />
       <div className={styles.body}>
         <h2 className={styles.heading}>Enter your code</h2>
         <p className={styles.sub}>Code sent to +234 {formattedPhone}</p>

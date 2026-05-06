@@ -30,7 +30,7 @@ export default function Step1Phone() {
     setDigits(raw);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setTouched(true);
     if (!isValid) return;
@@ -90,7 +90,14 @@ export default function Step1Phone() {
         </form>
         <p className={styles.loginLink}>
           Already have an account?{' '}
-          <a href="#" className={styles.loginAnchor}>
+          <a
+            href="#"
+            className={styles.loginAnchor}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/login');
+            }}
+          >
             Log in
           </a>
         </p>
