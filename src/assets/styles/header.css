@@ -1,0 +1,13 @@
+/* *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+
+
+.logIn, .sign-up{
+  transition: all 0.3s ease;
+}
+.logIn:hover, .sign-up:hover{
+  transform: scale(0.95) translateY(-2px);
+}

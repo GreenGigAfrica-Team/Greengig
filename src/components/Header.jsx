@@ -1,28 +1,50 @@
 // import  {useState } from "react";
-
+import '../assets/styles/header.css';
+import headerLogo from '../assets/images/header-logo.png'
 
 export default function Header() {
   return (
-    <div className="flex items-center justify-between p-4 bg-green-400 text-black-400">
- <div className="">
-      <img src="" alt="" />
-    </div>
-    <div className="flex">
-        <ul className="flex space-x-4">
-          <li><a href="">Home</a></li>
-          <li><a href="">About</a></li>
-          <li><a href="">Get Started</a></li>
-          <li><a href="">Our mission</a></li>
-          <li><a href="">Browse Task</a></li>
-          <li><a href="">Contact</a></li>
+    <section className="fixed z-10 flex items-center justify-between bg-[#fffff] text-black-400 p-2! h-[10vh] w-full"
+      style={
+        {
+          background: "rgba(255, 255, 255, 0.1)",
+         backdropFilter:" blur(10px)",
+         boxShadow:"0 6px 30px rgba(0, 0, 0, 0.25)"
+      }
+      }>
+      <div className="logo flex items-center">
+        <img src= {headerLogo} alt="" className='w-30 h-30' />
+       </div>
+      <div className="flex">
+        <ul className="nav-links flex gap-8">
+          <li>
+            <a className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Home</a>
+          </li>
+          <li>
+            <a className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">About</a>
+          </li>
+          <li>
+            <a  className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Get Started</a>
+          </li>
+          <li>
+            <a  className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Our mission</a>
+          </li>
+          <li>
+            <a className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8'  href="">Browse Task</a>
+          </li>
+          <li>
+            <a  className='relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Contact</a>
+          </li>
         </ul>
       </div>
-      <div className="flex space-x-2">
-        <button className="border border-green-400 text-black-400 hover:border border-green-600 hover:text-white">Log In</button>
-        <button className="bg-green-700 border border-none rounded-xl p-3 text-center text-white">Sign Up</button>
+      <div className="flex gap-6">
+         <button className=" logIn border-2 border-solid border-[#00ce2e] rounded-md text-black-400 py-1 px-2 hover:text-[#00ce2e]">
+          Log In
+        </button>
+        <button className="sign-up border border-none rounded-xl p-3 text-center text-white bg-[#038c30]">
+          Sign Up
+        </button>
       </div>
-    </div>
-   
+    </section>
   )
-
 }
