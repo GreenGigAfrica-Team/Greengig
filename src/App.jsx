@@ -5,7 +5,7 @@ import Steps from './components/Steps'
 import Jobs from './components/Jobs'
 import Features from './components/Features'
 import Cta from './components/Cta'
-import Partners from './components/Partners'
+import Partners from './components/Partners';
 import Footer from './components/Footer'
 
 function App() {
@@ -19,6 +19,7 @@ function App() {
       <Cta />
       <Partners />
       <Footer />
+
     </>
   )
 }

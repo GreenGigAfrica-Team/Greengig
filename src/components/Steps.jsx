@@ -1,11 +1,14 @@
-// import React from 'react';
+import React from 'react';
 import { useState } from 'react';
 import phoneIcon from '../assets/images/iconpack/phone icon.svg'
-import searchIcon from '../assets/images/'
+import searchIcon from '../assets/images/iconpack/browse task icon.svg'
 import paymentIcon from '../assets/images/iconpack/payment icon.svg'
 import volunteerIcon from '../assets/images/iconpack/volunteer icon.svg'
+import checkMarkIcon from '../assets/images/iconpack/checkmark icon.svg'
 import certificateIcon from '../assets/images/iconpack/certificate icon.svg'
 import organizationIcon from '../assets/images/iconpack/organization icon.svg'
+import postTaskIcon from '../assets/images/iconpack/post task icon.svg'
+import verifyIcon from '../assets/images/iconpack/verify icon.svg'
 
  const howItWorks = [
     {
@@ -50,7 +53,7 @@ import organizationIcon from '../assets/images/iconpack/organization icon.svg'
 
     {
       id: 5,
-      icon: ,
+      icon: checkMarkIcon,
       step: "02",
       type: "volunteers",
       title: "Complete climate tasks",
@@ -80,8 +83,8 @@ import organizationIcon from '../assets/images/iconpack/organization icon.svg'
 
     {
       id: 8,
-      icon: ,
-      step:  02,
+      icon: postTaskIcon,
+      step:  "02",
       type: 'organizations',
       title: 'Post tasks & find workers',
       description:
@@ -90,8 +93,8 @@ import organizationIcon from '../assets/images/iconpack/organization icon.svg'
 
     {
       id: 9,
-      icon: ,
-      step: 03,
+      icon: verifyIcon,
+      step:"03",
       type: "organizations",
       title: "Verify, pay & report impact",
       description:
@@ -129,17 +132,17 @@ export default function Steps() {
       </div>
    
 
-      <div className="flex justify-between items-center gap-8 max-w-400 py-4 ml-auto mr-auto w-[90%]">
+      <div className="flex justify-between  gap-8 max-w-400 py-4 ml-auto mr-auto w-[90%]">
         {filteredCards.map((stepCard) => (
           <div
-            key={card.id}
-            className="relative  flex justify-center items-center flex-col bg-[#f5f5f5] rounded-[10px] w-full  h-full flex-1  py-8 px-4">
+            key={stepCard.id}
+            className="relative bg-[#f5f5f5] rounded-[10px] w-full  h-full flex-1  py-8 px-4">
             <img src= {stepCard.icon} alt= {stepCard.title} />
             <h2 className="absolute top-2 right-2 text-5xl font-bold text-[]">
               {stepCard.step}
             </h2>
-            <h6 className="font-bold text-[1.1rem] text-left pb-1 pt-8"> {stepCard.title}</h6>
-            <p className='w-full'>{card.description}</p>
+            <h6 className="font-bold text-[1.1rem] text-left pb-1 pt-4"> {stepCard.title}</h6>
+            <p className='w-full text-left'>{stepCard.description}</p>
           </div>
         ))}
       </div>

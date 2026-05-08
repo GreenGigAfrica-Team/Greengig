@@ -1,4 +1,5 @@
 import React from 'react';
+import treePlantingIcon from '../assets/images/iconpack/tree planting icon.svg'
 
 export default function Cta() {
   return (
@@ -14,7 +15,7 @@ export default function Cta() {
         <p className= ' text-[1.2rem] text-white text-center'>Find paid tasks, volunteers, or post climate jobs in your <br /> community</p>
       </div>
       <div className='flex gap-4'>
-        <button className='bg-[#00ce2e] py-2 px-8 rounded-md font-semibold'>Find climate work</button>
+        <button className='bg-[#00ce2e] py-2 px-6 rounded-md font-semibold flex gap-1 items-center'> <img src= {treePlantingIcon} alt="" />Find climate work</button>
         <button className='border-[0.17rem] border-white py-2 px-6 rounded-md text-white font-semibold'>Post a job</button>
       </div>
     </section>

@@ -1,4 +1,4 @@
-// import React from "react";
+import React from "react";
 import wasteBinIcon from '../assets/images/iconpack/waste collection icon.svg'
 import treePlantingIcon from '../assets/images/iconpack/tree planting icon.svg'
 import urbanFarmingIcon from '../assets/images/iconpack/urban farming icon.svg'
@@ -61,12 +61,12 @@ export default function Features() {
 ]
 
   return (
-    <section className=" flex justify-center items-center flex-col bg-[#026c24] mt-8 py-10 h-full max-h-150 text-white">
+    <section className=" flex justify-center items-center flex-col bg-[#026c24] mt-8 py-20 h-full max-h-200 text-white">
       <div className="flex justify-center items-center flex-col mb-8 gap-2">
         <h2 className="text-4xl font-bold">Climate work that pays</h2>
         <p className="text-center text-white">From Lagos waste crisis to coastal restoration. Real environmental work, <br /> verified and comoensated</p>
       </div>
-      <div className="grid gap-3 grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 max-w-400 py-4 ml-auto mr-auto w-[80%]">
+      <div className="grid gap-3 grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 max-w-400 py-4 ml-auto mr-auto w-[90%]">
         {jobSection.map((jobsCard) => (
           <div key={jobsCard.id}
           className="py-8 px-4 rounded-[10px] bg-[#014d1a]">

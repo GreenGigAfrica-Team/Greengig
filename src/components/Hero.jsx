@@ -1,11 +1,12 @@
-// import { useState } from "react";
-import heroBg from "../assets/images/hero-img.jpg"
+import Reader from "react";
 import "../assets/styles/hero.css"
+import heroBg from "../assets/images/hero-img.jpg"
+import globeIcon from '../assets/images/iconpack/globe icon.svg'
 
 
 export default function Hero() {
   return (
-    <section className="bg-cover bg-c bg-no-repeat h-[90vh] w-full flex justify-center items-center my-auto mx-auto flex-col gap-8"
+    <section className="bg-cover bg-c bg-no-repeat w-full h-screen flex justify-center items-center my-auto mx-auto flex-col gap-8"
       style={{
         backgroundImage: `
         radial-gradient(circle at right, rgb(1, 46, 16), transparent 45%),
@@ -19,11 +20,11 @@ export default function Hero() {
         </p>
       </div>
       <div className="cta-button ml-auto mr-auto flex space-x-8">
-        <button className="bg-green-900 p-2.5 rounded-md text-white">Find climate jobs</button>
-        <button className="job-btn border-2 border-solid border-white p-2.5 rounded-md text-white">Post a job</button>
+        <button className="bg-green-900 py-2.5 px-6 rounded-md text-white">Find climate jobs</button>
+        <button className="job-btn border-[2.4px] border-solid border-white py-2.5 px-5 rounded-md text-white">Post a job</button>
       </div>
       <div className="tag-line">
-        <p className="text-white text-[1rem] text-center">Connecting workers to verified climate organisations across Lagos</p>
+        <p className=" flex items-center justify-center gap-2 text-white text-[1rem] text-center"> <span><img src={globeIcon} alt="Globe" /></span>Connecting workers to verified climate organisations across Lagos</p>
       </div>
     </section>
   )
