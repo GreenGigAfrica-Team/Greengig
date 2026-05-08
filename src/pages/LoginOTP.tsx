@@ -59,8 +59,7 @@ export default function LoginOTP() {
   function handleVerify(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!isFilled) return;
-    // TODO: replace '/' with the dashboard route once built
-    navigate('/');
+    navigate('/find-tasks');
   }
 
   function handleResend() {

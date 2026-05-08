@@ -25,7 +25,7 @@ export default function Step5Success() {
         <button
           type="button"
           className={styles.btn}
-          onClick={() => navigate('/onboarding/phone')}
+          onClick={() => navigate('/find-tasks')}
         >
           Find climate jobs near me
         </button>

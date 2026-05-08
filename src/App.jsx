@@ -6,6 +6,7 @@ import Step4Profile from './pages/Step4Profile'
 import Step5Success from './pages/Step5Success'
 import LoginPhone from './pages/LoginPhone'
 import LoginOTP from './pages/LoginOTP'
+import FindTasks from './pages/FindTasks'
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
       {/* worker login (tagged /signin) */}
       <Route path="/signin" element={<LoginPhone />} />
       <Route path="/signin/verify" element={<LoginOTP />} />
+
+      {/* main app */}
+      <Route path="/find-tasks" element={<FindTasks />} />
     </Routes>
   )
 }
