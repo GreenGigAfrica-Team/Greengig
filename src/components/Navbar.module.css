@@ -4,7 +4,7 @@
   background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   padding: 0 32px;
-  height: 80px;
+  height: 64px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -18,7 +18,7 @@
 }
 
 .logo {
-  height: 72px;
+  height: 48px;
   width: auto;
 }
 
