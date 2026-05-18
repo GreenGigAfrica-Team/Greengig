@@ -21,7 +21,7 @@ export default function Hero() {
         </p>
       </div>
       <div className="cta-button ml-auto mr-auto flex space-x-8">
-        <button onClick={() => navigate('/onboarding/phone')} className="bg-green-900 py-2.5 px-6 rounded-md text-white">Find climate jobs</button>
+        <button onClick={() => navigate('/onboarding')} className="bg-green-900 py-2.5 px-6 rounded-md text-white">Find climate jobs</button>
         <button className="job-btn border-[2.4px] border-solid border-white py-2.5 px-5 rounded-md text-white">Post a job</button>
       </div>
       <div className="tag-line">

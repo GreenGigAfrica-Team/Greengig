@@ -11,6 +11,7 @@ import Partners from './components/Partners'
 import Footer from './components/Footer'
 
 // Onboarding & auth pages
+import AccountType from './pages/AccountType'
 import Step1Phone from './pages/Step1Phone'
 import Step2OTP from './pages/Step2OTP'
 import Step3WorkPath from './pages/Step3WorkPath'
@@ -41,6 +42,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
 
       {/* volunteer & worker sign-up */}
+      <Route path="/onboarding" element={<AccountType />} />
       <Route path="/onboarding/phone" element={<Step1Phone />} />
       <Route path="/onboarding/verify" element={<Step2OTP />} />
       <Route path="/onboarding/path" element={<Step3WorkPath />} />

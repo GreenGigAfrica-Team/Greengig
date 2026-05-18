@@ -56,7 +56,7 @@ export default function Header() {
          <button onClick={() => navigate('/login')} className=" logIn border-2 border-solid border-[#00ce2e] rounded-xl text-black-400 py-[0.6em] px-[0.8em] hover:text-[#00ce2e]">
           Log In
         </button>
-        <button onClick={() => navigate('/onboarding/phone')} className="sign-up border border-none rounded-xl py-[0.6em] px-[0.8em] text-center text-white bg-[#038c30]">
+        <button onClick={() => navigate('/onboarding')} className="sign-up border border-none rounded-xl py-[0.6em] px-[0.8em] text-center text-white bg-[#038c30]">
           Sign Up
         </button>
       </div>
