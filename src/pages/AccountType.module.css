@@ -67,7 +67,8 @@
 
 .cardDisabled {
   opacity: 0.45;
-  cursor: default;
+  cursor: not-allowed;
+  pointer-events: none;
   position: relative;
 }
 
