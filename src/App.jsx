@@ -20,6 +20,7 @@ import Step5Success from './pages/Step5Success'
 import LoginPhone from './pages/LoginPhone'
 import LoginOTP from './pages/LoginOTP'
 import FindTasks from './pages/FindTasks'
+import TaskDetail from './pages/TaskDetail'
 
 function LandingPage() {
   return (
@@ -59,6 +60,7 @@ function App() {
 
       {/* main app */}
       <Route path="/find-tasks" element={<FindTasks />} />
+      <Route path="/tasks/:id" element={<TaskDetail />} />
     </Routes>
   )
 }

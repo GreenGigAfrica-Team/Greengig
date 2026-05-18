@@ -6,57 +6,39 @@ import headerLogo from '../assets/images/header-logo.png'
 export default function Header() {
   const navigate = useNavigate();
   return (
-    <header className="fixed z-10 flex items-center justify-between bg-[#fffff] text-black-400 py-6 px-6 h-[10vh] w-full"
-      style={
-        {
-          background: "rgba(255, 255, 255, 0.1)",
-          backdropFilter:" blur(10px)",
-          boxShadow:"0 6px 30px rgba(0, 0, 0, 0.25)"
-      }
-      }>
+    <header className="fixed z-10 flex items-center justify-between py-6 px-6 h-[10vh] w-full"
+      style={{
+        background: "#ffffff",
+        boxShadow: "0 1px 0 #e0e0e0"
+      }}>
       <div className="logo flex items-center">
         <img src={headerLogo} alt="Header 
         Logo" className='w-30 h-30' />
       </div>
       <div className="flex">
         <ul className="nav-links flex gap-8">
-          <li>
-            <a className='relative 
-            after:content-[""]
-            after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Home</a>
-          </li>
-          <li>
-            <a className='relative 
-            after:content-[""]
-            after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">About</a>
-          </li>
-          <li>
-            <a className='relative after:absolute 
-            after:content-[""]
-            after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Get Started</a>
-          </li>
-          <li>
-            <a className='relative after:absolute
-            after:content-[""]
-            after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Our mission</a>
-          </li>
-          <li>
-            <a className='relative after:absolute 
-            after:content-[""]
-            after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8'  href="">Browse Task</a>
-          </li>
-          <li>
-            <a className='relative after:absolute
-            after:content-[""]
-            after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#00ce2e] after:transition-all hover:after:w-full underline-offset-8' href="">Contact</a>
-          </li>
+          {['How it works', 'Task types', 'Why GreenGig', 'About'].map((label) => (
+            <li key={label}>
+              <a
+                href=""
+                className='relative text-[#1a1a1a] text-[16px] font-normal after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-[#026C24] after:transition-all hover:after:w-full underline-offset-8'
+              >{label}</a>
+            </li>
+          ))}
         </ul>
       </div>
-      <div className="flex gap-6">
-         <button onClick={() => navigate('/login')} className=" logIn border-2 border-solid border-[#00ce2e] rounded-xl text-black-400 py-[0.6em] px-[0.8em] hover:text-[#00ce2e]">
+      <div className="flex gap-6 items-center">
+        <button
+          onClick={() => navigate('/login')}
+          className="logIn text-[#1a1a1a] text-[16px] font-medium bg-transparent border-none cursor-pointer"
+        >
           Log In
         </button>
-        <button onClick={() => navigate('/onboarding')} className="sign-up border border-none rounded-xl py-[0.6em] px-[0.8em] text-center text-white bg-[#038c30]">
+        <button
+          onClick={() => navigate('/onboarding')}
+          className="sign-up rounded-[10px] text-white text-[16px] font-medium"
+          style={{ padding: '14px 32px', background: '#026C24', border: 'none' }}
+        >
           Sign Up
         </button>
       </div>
