@@ -29,12 +29,12 @@ const LGAS = [
 ];
 
 const INTERESTS = [
-  { id: 'waste', label: 'Waste Collection', icon: '🗑️' },
-  { id: 'trees', label: 'Tree Planting', icon: '🌳' },
-  { id: 'farming', label: 'Urban Farming', icon: '🌾' },
-  { id: 'climate', label: 'Climate Data', icon: '📊' },
-  { id: 'recycling', label: 'Recycling', icon: '♻️' },
-  { id: 'education', label: 'Community Education', icon: '📚' },
+  { id: 'waste', label: 'Waste Collection', icon: '🗑️', comingSoon: false },
+  { id: 'trees', label: 'Tree Planting', icon: '🌳', comingSoon: true },
+  { id: 'farming', label: 'Urban Farming', icon: '🌾', comingSoon: true },
+  { id: 'climate', label: 'Climate Data', icon: '📊', comingSoon: true },
+  { id: 'recycling', label: 'Recycling', icon: '♻️', comingSoon: false },
+  { id: 'education', label: 'Community Education', icon: '📚', comingSoon: false },
 ];
 
 export default function Step4Profile() {
@@ -122,14 +122,18 @@ export default function Step4Profile() {
                 <button
                   key={item.id}
                   type="button"
-                  className={`${styles.interestCard} ${
-                    interests.has(item.id) ? styles.interestSelected : ''
-                  }`}
-                  onClick={() => toggleInterest(item.id)}
-                  aria-pressed={interests.has(item.id)}
+                  className={[
+                    styles.interestCard,
+                    item.comingSoon ? styles.interestDisabled : '',
+                    !item.comingSoon && interests.has(item.id) ? styles.interestSelected : '',
+                  ].filter(Boolean).join(' ')}
+                  onClick={() => { if (!item.comingSoon) toggleInterest(item.id); }}
+                  aria-pressed={!item.comingSoon && interests.has(item.id)}
+                  disabled={item.comingSoon}
                 >
                   <span className={styles.interestIcon}>{item.icon}</span>
                   <span className={styles.interestName}>{item.label}</span>
+                  {item.comingSoon && <span className={styles.soonBadge}>Coming soon</span>}
                 </button>
               ))}
             </div>
