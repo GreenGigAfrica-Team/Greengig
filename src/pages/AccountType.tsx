@@ -73,9 +73,7 @@ export default function AccountType() {
             ]
               .filter(Boolean)
               .join(' ')}
-            onClick={() => {
-              if (!card.comingSoon) setSelected(card.id as AccountType);
-            }}
+            {...(!card.comingSoon && { onClick: () => setSelected(card.id as AccountType) })}
           >
             {card.comingSoon && <span className={styles.soon}>Coming soon</span>}
             <span className={styles.icon}>{card.icon}</span>
