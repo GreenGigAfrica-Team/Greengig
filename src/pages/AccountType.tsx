@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './AccountType.module.css';
 
-type AccountType = 'jobseeker' | 'volunteer';
+type AccountType = 'jobseeker' | 'volunteer' | 'org';
 
-const CARDS = [
+const CARDS: { id: AccountType; icon: string; title: string; description: string; badge: string; points: string[] }[] = [
   {
-    id: 'jobseeker' as AccountType,
+    id: 'jobseeker',
     icon: '💰',
     title: 'Job Seeker',
     description: 'Find paid climate tasks near you and earn money via mobile wallet.',
@@ -16,10 +16,9 @@ const CARDS = [
       'Get paid via OPay or PalmPay',
       'Build a verified work history',
     ],
-    comingSoon: false,
   },
   {
-    id: 'volunteer' as AccountType,
+    id: 'volunteer',
     icon: '🌱',
     title: 'Volunteer',
     description: 'Contribute to climate action and earn a verified certificate and impact score.',
@@ -29,10 +28,9 @@ const CARDS = [
       'Downloadable certificate',
       'Visible impact score on profile',
     ],
-    comingSoon: false,
   },
   {
-    id: 'org' as any,
+    id: 'org',
     icon: '🏢',
     title: 'Organization',
     description: 'Post climate tasks, find verified workers, and report your impact to donors.',
@@ -42,9 +40,14 @@ const CARDS = [
       'Review proof of work',
       'Export donor impact reports',
     ],
-    comingSoon: true,
   },
 ];
+
+const LABELS: Record<AccountType, string> = {
+  jobseeker: 'a job seeker',
+  volunteer: 'a volunteer',
+  org: 'an organisation',
+};
 
 export default function AccountType() {
   const navigate = useNavigate();
@@ -53,8 +56,6 @@ export default function AccountType() {
   function handleContinue() {
     navigate('/onboarding/phone', { state: { accountType: selected } });
   }
-
-  const label = selected === 'jobseeker' ? 'job seeker' : 'volunteer';
 
   return (
     <div className={styles.page}>
@@ -68,18 +69,16 @@ export default function AccountType() {
             key={card.id}
             className={[
               styles.card,
-              card.comingSoon ? styles.cardDisabled : '',
-              !card.comingSoon && selected === card.id ? styles.cardSelected : '',
+              selected === card.id ? styles.cardSelected : '',
             ]
               .filter(Boolean)
               .join(' ')}
-            {...(!card.comingSoon && { onClick: () => setSelected(card.id as AccountType) })}
+            onClick={() => setSelected(card.id)}
           >
-            {card.comingSoon && <span className={styles.soon}>Coming soon</span>}
             <span className={styles.icon}>{card.icon}</span>
             <h3 className={styles.cardTitle}>{card.title}</h3>
             <p className={styles.cardDesc}>{card.description}</p>
-            <span className={[styles.badge, card.comingSoon ? styles.badgeGrey : styles.badgeGreen].join(' ')}>
+            <span className={`${styles.badge} ${styles.badgeGreen}`}>
               {card.badge}
             </span>
             <ul className={styles.points}>
@@ -92,11 +91,15 @@ export default function AccountType() {
       </div>
 
       <button type="button" className={styles.btn} onClick={handleContinue}>
-        Continue as a {label}
+        Continue as {LABELS[selected]}
       </button>
       <p className={styles.loginRow}>
         Already have an account?{' '}
-        <a href="#" className={styles.loginLink} onClick={(e) => { e.preventDefault(); navigate('/login'); }}>
+        <a
+          href="#"
+          className={styles.loginLink}
+          onClick={(e) => { e.preventDefault(); navigate('/login'); }}
+        >
           Log in
         </a>
       </p>
