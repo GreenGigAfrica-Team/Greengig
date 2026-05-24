@@ -1,5 +1,7 @@
-// Central API utility — Vite proxy forwards /api → http://127.0.0.1:8000
-const BASE = '/api/v1';
+// Central API utility
+// In dev: Vite proxy forwards /api → http://127.0.0.1:8000
+// In prod: VITE_API_URL points to the deployed backend
+const BASE = (import.meta.env.VITE_API_URL ?? '') + '/api/v1';
 
 function getToken(): string | null {
   return localStorage.getItem('gg_access');
