@@ -1,7 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber, type ConfirmationResult } from 'firebase/auth';
-import { auth } from '../firebase';
 import { api } from '../api';
 import AuthLayout from '../components/AuthLayout';
 import ProgressBar from '../components/ProgressBar';
@@ -23,7 +21,6 @@ export default function Step2OTP() {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(RESEND_COOLDOWN);
   const [devOtp, setDevOtp] = useState<string>(devOtpInitial);
-  const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(location.state?.confirmation ?? null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const isFilled = otp.every(d => d !== '');
 
@@ -63,21 +60,25 @@ export default function Step2OTP() {
     setLoading(true); setHasError(false); setErrorMsg('');
     try {
       const code = otp.join('');
-      if (confirmation) {
-        const result = await confirmation.confirm(code);
+      // Use window.confirmationResult set by Step1Phone
+      if (window.confirmationResult) {
+        const result = await window.confirmationResult.confirm(code);
         const idToken = await result.user.getIdToken();
         const data = await api.firebaseLogin(idToken);
         localStorage.setItem('gg_access', data.tokens.access);
         localStorage.setItem('gg_refresh', data.tokens.refresh);
         navigate(data.profile_complete ? '/find-tasks' : '/onboarding/path', { state: { phone } });
       } else {
+        // Dev fallback
         const data = await api.verifyOTP(fullPhone, code);
         localStorage.setItem('gg_access', data.tokens.access);
         localStorage.setItem('gg_refresh', data.tokens.refresh);
         navigate(data.profile_complete ? '/find-tasks' : '/onboarding/path', { state: { phone } });
       }
-    } catch { setHasError(true); setErrorMsg('Incorrect code. Please try again.'); }
-    finally { setLoading(false); }
+    } catch {
+      setHasError(true);
+      setErrorMsg('Incorrect code. Please try again.');
+    } finally { setLoading(false); }
   }
 
   async function handleResend() {
@@ -85,14 +86,8 @@ export default function Step2OTP() {
     setOtp(Array(OTP_LENGTH).fill('')); setHasError(false); setErrorMsg(''); setCountdown(RESEND_COOLDOWN);
     setTimeout(() => focusBox(0), 0);
     try {
-      if (fullPhone && confirmation) {
-        const recaptcha = new RecaptchaVerifier(auth, 'recaptcha-resend', { size: 'invisible' });
-        const result = await signInWithPhoneNumber(auth, fullPhone, recaptcha);
-        setConfirmation(result);
-      } else {
-        const res = await api.requestOTP(fullPhone);
-        setDevOtp(res.dev_otp || '');
-      }
+      const res = await api.requestOTP(fullPhone);
+      setDevOtp(res.dev_otp || '');
     } catch {}
   }
 
@@ -133,7 +128,6 @@ export default function Step2OTP() {
             {countdown > 0 ? <span className={styles.resendCooldown}>Resend OTP in {countdown}s</span>
               : <button type="button" className={styles.resendBtn} onClick={handleResend}>Resend OTP</button>}
           </div>
-          <div id="recaptcha-resend" />
           <button type="submit" disabled={loading}
             className={`${styles.btn} ${isFilled && !loading ? styles.btnActive : styles.btnMuted}`}>
             {loading ? 'Verifying…' : 'Verify'}

@@ -1,7 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber, type ConfirmationResult } from 'firebase/auth';
-import { auth } from '../firebase';
 import { api } from '../api';
 import AuthLayout from '../components/AuthLayout';
 import styles from './LoginOTP.module.css';
@@ -23,7 +21,6 @@ export default function LoginOTP() {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(RESEND_COOLDOWN);
   const [devOtp, setDevOtp] = useState<string>(devOtpInitial);
-  const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(location.state?.confirmation ?? null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const isFilled = otp.every(d => d !== '');
 
@@ -62,8 +59,8 @@ export default function LoginOTP() {
     setLoading(true); setHasError(false); setErrorMsg('');
     try {
       const code = otp.join('');
-      if (confirmation) {
-        const result = await confirmation.confirm(code);
+      if (window.confirmationResult) {
+        const result = await window.confirmationResult.confirm(code);
         const idToken = await result.user.getIdToken();
         const data = await api.firebaseLogin(idToken);
         localStorage.setItem('gg_access', data.tokens.access);
@@ -75,8 +72,10 @@ export default function LoginOTP() {
         localStorage.setItem('gg_refresh', data.tokens.refresh);
         navigate('/find-tasks');
       }
-    } catch { setHasError(true); setErrorMsg('Incorrect code. Please try again.'); }
-    finally { setLoading(false); }
+    } catch {
+      setHasError(true);
+      setErrorMsg('Incorrect code. Please try again.');
+    } finally { setLoading(false); }
   }
 
   async function handleResend() {
@@ -84,14 +83,8 @@ export default function LoginOTP() {
     setOtp(Array(OTP_LENGTH).fill('')); setHasError(false); setErrorMsg(''); setCountdown(RESEND_COOLDOWN);
     setTimeout(() => focusBox(0), 0);
     try {
-      if (confirmation && fullPhone) {
-        const recaptcha = new RecaptchaVerifier(auth, 'recaptcha-resend-login', { size: 'invisible' });
-        const result = await signInWithPhoneNumber(auth, fullPhone, recaptcha);
-        setConfirmation(result);
-      } else {
-        const res = await api.requestOTP(fullPhone);
-        setDevOtp(res.dev_otp || '');
-      }
+      const res = await api.requestOTP(fullPhone);
+      setDevOtp(res.dev_otp || '');
     } catch {}
   }
 
@@ -131,7 +124,6 @@ export default function LoginOTP() {
             {countdown > 0 ? <span className={styles.resendCooldown}>Resend OTP in {countdown}s</span>
               : <button type="button" className={styles.resendBtn} onClick={handleResend}>Resend OTP</button>}
           </div>
-          <div id="recaptcha-resend-login" />
           <button type="submit" disabled={loading}
             className={`${styles.btn} ${isFilled && !loading ? styles.btnActive : styles.btnMuted}`}>
             {loading ? 'Verifying…' : 'Verify'}

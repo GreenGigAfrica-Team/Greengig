@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { auth } from '../firebase';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import AuthLayout from '../components/AuthLayout';
 import PhoneInput, { type PhoneValue } from '../components/PhoneInput';
 import styles from './LoginPhone.module.css';
@@ -15,33 +14,45 @@ export default function LoginPhone() {
   const [touched, setTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const recaptchaRef = useRef<RecaptchaVerifier | null>(null);
 
   const showError = touched && phone.digits.length > 0 && !phone.isValid;
   const showHelper = phone.isValid && !error;
 
-  useEffect(() => {
-    recaptchaRef.current = new RecaptchaVerifier(auth, 'recaptcha-login', {
-      size: 'normal',
-      callback: () => {},
-      'expired-callback': () => { recaptchaRef.current?.clear(); recaptchaRef.current = null; },
-    });
-    recaptchaRef.current.render();
-    return () => { recaptchaRef.current?.clear(); recaptchaRef.current = null; };
-  }, []);
+  function setupRecaptcha() {
+    const auth = getAuth();
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'login-button', {
+        size: 'invisible',
+        callback: () => {},
+      });
+    }
+  }
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setTouched(true);
-    if (!phone.isValid || loading || !recaptchaRef.current) return;
-    setLoading(true); setError('');
+    if (!phone.isValid || loading) return;
+
+    setLoading(true);
+    setError('');
+
     try {
-      const confirmation = await signInWithPhoneNumber(auth, phone.full, recaptchaRef.current);
-      navigate(verifyPath, { state: { phone: phone.digits, fullPhone: phone.full, confirmation } });
+      setupRecaptcha();
+      const auth = getAuth();
+      const confirmation = await signInWithPhoneNumber(auth, phone.full, window.recaptchaVerifier);
+      window.confirmationResult = confirmation;
+      navigate(verifyPath, { state: { phone: phone.digits, fullPhone: phone.full } });
     } catch (err: unknown) {
-      recaptchaRef.current?.clear(); recaptchaRef.current = null;
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.render().then((widgetId) => {
+          // @ts-ignore
+          if (window.grecaptcha) window.grecaptcha.reset(widgetId);
+        });
+      }
       setError(err instanceof Error ? err.message : 'Failed to send OTP. Try again.');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -56,9 +67,12 @@ export default function LoginPhone() {
             {showError && <p className={styles.errorText}>Please enter a valid phone number</p>}
             {showHelper && <p className={styles.helperText}>We'll send a one time code to this number</p>}
             {error && <p className={styles.errorText}>{error}</p>}
-            <div id="recaptcha-login" style={{ margin: '16px 0' }} />
-            <button type="submit" disabled={loading}
-              className={`${styles.btn} ${phone.isValid && !loading ? styles.btnActive : styles.btnMuted}`}>
+            <button
+              id="login-button"
+              type="submit"
+              disabled={loading}
+              className={`${styles.btn} ${phone.isValid && !loading ? styles.btnActive : styles.btnMuted}`}
+            >
               {loading ? 'Sending…' : 'Send OTP'}
             </button>
           </form>
