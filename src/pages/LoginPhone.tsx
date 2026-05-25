@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { auth } from '../firebase';
 import AuthLayout from '../components/AuthLayout';
 import PhoneInput, { type PhoneValue } from '../components/PhoneInput';
 import styles from './LoginPhone.module.css';
@@ -19,7 +20,6 @@ export default function LoginPhone() {
   const showHelper = phone.isValid && !error;
 
   function setupRecaptcha() {
-    const auth = getAuth();
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'login-button', {
         size: 'invisible',
@@ -38,7 +38,6 @@ export default function LoginPhone() {
 
     try {
       setupRecaptcha();
-      const auth = getAuth();
       const confirmation = await signInWithPhoneNumber(auth, phone.full, window.recaptchaVerifier);
       window.confirmationResult = confirmation;
       navigate(verifyPath, { state: { phone: phone.digits, fullPhone: phone.full } });
