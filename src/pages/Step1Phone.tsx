@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { auth } from '../firebase';
 import AuthLayout from '../components/AuthLayout';
 import ProgressBar from '../components/ProgressBar';
 import PhoneInput, { type PhoneValue } from '../components/PhoneInput';
@@ -25,13 +26,10 @@ export default function Step1Phone() {
   const showHelper = phone.isValid && !error;
 
   function setupRecaptcha() {
-    const auth = getAuth();
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
         size: 'invisible',
-        callback: () => {
-          // reCAPTCHA solved automatically
-        },
+        callback: () => {},
       });
     }
   }
@@ -46,12 +44,10 @@ export default function Step1Phone() {
 
     try {
       setupRecaptcha();
-      const auth = getAuth();
       const confirmation = await signInWithPhoneNumber(auth, phone.full, window.recaptchaVerifier);
       window.confirmationResult = confirmation;
       navigate('/onboarding/verify', { state: { phone: phone.digits, fullPhone: phone.full } });
     } catch (err: unknown) {
-      // Reset reCAPTCHA on error so user can try again
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.render().then((widgetId) => {
           window.recaptchaWidgetId = widgetId;
