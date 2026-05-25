@@ -1,11 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { auth } from '../firebase';
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import AuthLayout from '../components/AuthLayout';
 import ProgressBar from '../components/ProgressBar';
 import PhoneInput, { type PhoneValue } from '../components/PhoneInput';
 import styles from './Step1Phone.module.css';
+
+declare global {
+  interface Window {
+    recaptchaVerifier: RecaptchaVerifier;
+    recaptchaWidgetId: number;
+    confirmationResult: ReturnType<typeof signInWithPhoneNumber> extends Promise<infer T> ? T : never;
+  }
+}
 
 export default function Step1Phone() {
   const navigate = useNavigate();
@@ -13,35 +20,49 @@ export default function Step1Phone() {
   const [touched, setTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const recaptchaRef = useRef<RecaptchaVerifier | null>(null);
 
   const showError = touched && phone.digits.length > 0 && !phone.isValid;
   const showHelper = phone.isValid && !error;
 
-  useEffect(() => {
-    recaptchaRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'normal',
-      callback: () => {},
-      'expired-callback': () => { recaptchaRef.current?.clear(); recaptchaRef.current = null; },
-    });
-    recaptchaRef.current.render();
-    return () => { recaptchaRef.current?.clear(); recaptchaRef.current = null; };
-  }, []);
+  function setupRecaptcha() {
+    const auth = getAuth();
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
+        size: 'invisible',
+        callback: () => {
+          // reCAPTCHA solved automatically
+        },
+      });
+    }
+  }
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setTouched(true);
-    if (!phone.isValid || loading || !recaptchaRef.current) return;
+    if (!phone.isValid || loading) return;
+
     setLoading(true);
     setError('');
+
     try {
-      const confirmation = await signInWithPhoneNumber(auth, phone.full, recaptchaRef.current);
-      navigate('/onboarding/verify', { state: { phone: phone.digits, fullPhone: phone.full, confirmation } });
+      setupRecaptcha();
+      const auth = getAuth();
+      const confirmation = await signInWithPhoneNumber(auth, phone.full, window.recaptchaVerifier);
+      window.confirmationResult = confirmation;
+      navigate('/onboarding/verify', { state: { phone: phone.digits, fullPhone: phone.full } });
     } catch (err: unknown) {
-      recaptchaRef.current?.clear();
-      recaptchaRef.current = null;
+      // Reset reCAPTCHA on error so user can try again
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.render().then((widgetId) => {
+          window.recaptchaWidgetId = widgetId;
+          // @ts-ignore
+          if (window.grecaptcha) window.grecaptcha.reset(widgetId);
+        });
+      }
       setError(err instanceof Error ? err.message : 'Failed to send OTP. Try again.');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -56,9 +77,12 @@ export default function Step1Phone() {
           {showError && <p className={styles.errorText}>Please enter a valid phone number</p>}
           {showHelper && <p className={styles.helperText}>We'll send a one time code to this number</p>}
           {error && <p className={styles.errorText}>{error}</p>}
-          <div id="recaptcha-container" style={{ margin: '16px 0' }} />
-          <button type="submit" disabled={loading}
-            className={`${styles.btn} ${phone.isValid && !loading ? styles.btnActive : styles.btnMuted}`}>
+          <button
+            id="sign-in-button"
+            type="submit"
+            disabled={loading}
+            className={`${styles.btn} ${phone.isValid && !loading ? styles.btnActive : styles.btnMuted}`}
+          >
             {loading ? 'Sending…' : 'Send OTP'}
           </button>
         </form>
